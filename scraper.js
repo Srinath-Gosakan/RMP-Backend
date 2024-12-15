@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 import mongoose from 'mongoose';
 import { GridFSBucket } from 'mongodb';
-import Professor from './mongo.js';
+import Professor from './model.js';
 
 let gfsBucket;
 

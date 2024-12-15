@@ -1,6 +1,6 @@
 import express from 'express';
 import { scrapeAndSave, getImageByProfID } from './scraper.js';
-import Professor from './mongo.js';
+import Professor from './model.js';
 
 const createRouter = () => {
     const router = express.Router();
