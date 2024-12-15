@@ -1,46 +1,59 @@
 import express from 'express';
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { scrapeAndSave, getImageByProfID } from './scraper.js';
+import Professor from './mongo.js';
 
-const router = express.Router();
-const uri = "mongodb+srv://gosakan003:Srinath2003@cluster0.1x41k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const createRouter = () => {
+    const router = express.Router();
 
-const client = new MongoClient(uri, {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    },
-});
+    // Get all professors
+    router.get('/professors', async (req, res) => {
+        try {
+            const professors = await Professor.find();
+            res.status(200).json(professors);
+        } catch (error) {
+            console.error("Error fetching professors:", error);
+            res.status(500).json({ message: 'Error fetching professors', error: error.message });
+        }
+    });
 
-// Endpoint to get all professor details
-router.get('/professors', async (req, res) => {
-    try {
-        await client.connect();
-        const db = client.db("profDetails");
-        const collection = db.collection("professors");
-        
-        // Retrieve all professor details from the collection
-        const professors = await collection.find({}).toArray();
+    // Scrape and save professors
+    router.post('/scrape', async (req, res) => {
+        try {
+            await scrapeAndSave();
+            res.status(200).json({ message: 'Data scraped and saved successfully.' });
+        } catch (error) {
+            console.error("Error in scrape route:", error);
+            res.status(500).json({ message: 'Error scraping data', error: error.message });
+        }
+    });
 
-        // Convert image data to base64
-        const professorsWithImages = professors.map(prof => ({
-            profID: prof.profID,
-            profName: prof.profName,
-            image: `data:${prof.image.contentType};base64,${prof.image.data.toString('base64')}`
-        }));
-        res.json(professorsWithImages);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error retrieving professor details');
-    } finally {
-        await client.close(); // Ensure the client is closed after operations
-    }
-});
+    // Get professor details by ID
+    router.get('/professor/:id', async (req, res) => {
+        try {
+            const professor = await Professor.findOne({ profID: req.params.id });
 
-router.get('/', (req, res) => {
-    res.send('Server is up and running!');
-});
+            if (!professor) {
+                return res.status(404).json({ message: 'Professor not found.' });
+            }
 
-export default router;
+            res.status(200).json(professor);
+        } catch (error) {
+            console.error("Error retrieving professor details:", error);
+            res.status(500).json({ message: 'Error retrieving professor details', error: error.message });
+        }
+    });
 
+    // Get professor image by ID
+    router.get('/professor/:id/image', async (req, res) => {
+        try {
+            const readStream = await getImageByProfID(req.params.id);
+            readStream.pipe(res); // Pipe the image stream to the response
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving image', error: error.message });
+        }
+    });
 
+    return router;
+};
+
+export default createRouter;
