@@ -21,6 +21,6 @@ app.use(cors());
 app.use('/api', createRouter());
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(process.env.port || PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
