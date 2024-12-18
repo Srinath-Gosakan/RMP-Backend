@@ -28,7 +28,6 @@ const scrapeAndSave = async () => {
         browser = await puppeteer.launch({
             headless: false,
             defaultViewport: null,
-            slowMo: 50,  // Slow down the browser to see what's happening
         });
 
         const page = await browser.newPage();
