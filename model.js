@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const professorSchema = new mongoose.Schema({
     name: { type: String, required: true },
     profID: { type: String, required: true, unique: true },
-    image: { type: mongoose.Schema.Types.ObjectId, ref: 'uploads.files' },
+    image: { type: String },  // Store Cloudinary public_id as a string
     rating: { type: Number, default: 2.5 },
     feedback: { type: [String], default: [] },
 });

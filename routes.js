@@ -43,11 +43,11 @@ const createRouter = () => {
         }
     });
 
-    // Get professor image by ID
+    // Get professor image by ID (Cloudinary URL)
     router.get('/professor/:id/image', async (req, res) => {
         try {
-            const readStream = await getImageByProfID(req.params.id);
-            readStream.pipe(res); // Pipe the image stream to the response
+            const imageUrl = await getImageByProfID(req.params.id);
+            res.status(200).json({ imageUrl });
         } catch (error) {
             res.status(500).json({ message: 'Error retrieving image', error: error.message });
         }
