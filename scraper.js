@@ -1,7 +1,9 @@
-import puppeteer from 'puppeteer';
+// import puppeteer from 'puppeteer';
 import cloudinary from 'cloudinary';
 import Professor from './model.js';
 import dotenv from 'dotenv';
+import chromium from '@sparticuz/chromium';
+import puppeteer from 'puppeteer-core';
 
 dotenv.config();
 
@@ -26,8 +28,11 @@ const scrapeAndSave = async () => {
         await Professor.deleteMany({});  // Clear existing professors
 
         browser = await puppeteer.launch({
-            headless: false,
-            defaultViewport: null,
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath(),
+            headless: chromium.headless,
+            ignoreHTTPSErrors: true,
         });
 
         const page = await browser.newPage();

@@ -11,6 +11,7 @@
   "description": "",
   "type": "module",
   "dependencies": {
+    "@sparticuz/chromium": "^131.0.1",
     "axios": "^1.7.7",
     "body-parser": "^1.20.3",
     "chrome-aws-lambda": "^10.1.0",
