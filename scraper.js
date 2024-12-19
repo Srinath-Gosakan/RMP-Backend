@@ -1,18 +1,9 @@
-// import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer';
 import cloudinary from 'cloudinary';
 import Professor from './model.js';
 import dotenv from 'dotenv';
-import chromium from '@sparticuz/chromium';
-import puppeteer from 'puppeteer-core';
 
 dotenv.config();
-
-// Log Cloudinary configuration
-console.log('Cloudinary Config:', {
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 // Cloudinary configuration
 cloudinary.config({
@@ -28,11 +19,8 @@ const scrapeAndSave = async () => {
         await Professor.deleteMany({});  // Clear existing professors
 
         browser = await puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath(),
-            headless: chromium.headless,
-            ignoreHTTPSErrors: true,
+            headless: false,
+            defaultViewport: null,
         });
 
         const page = await browser.newPage();
