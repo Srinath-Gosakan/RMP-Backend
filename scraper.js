@@ -37,7 +37,7 @@ const scrapeAndSave = async () => {
 
         const page = await browser.newPage();
         await page.goto("https://www.sastra.edu/staffprofiles/schools/soc.php", {
-            waitUntil: "networkidle0", // Wait for the network to be idle
+            waitUntil: "domcontentloaded",
         });
 
         const profDetails = await page.evaluate(() => {
