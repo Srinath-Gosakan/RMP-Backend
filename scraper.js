@@ -34,7 +34,8 @@ const scrapeAndSave = async () => {
                 const imageSrc = new URL(card.querySelector("img").src, window.location.href).href; // Ensure absolute URL
                 const profID = imageSrc.split('/').pop().split('.').shift();
                 const profName = card.querySelector("h1") ? card.querySelector("h1").innerText : "Unknown";
-                return { profID, imageSrc, profName };
+                const title = card.querySelector("b") ? card.querySelector("b").innerText : "Unknown";
+                return { profID, imageSrc, profName, title };
             });
         });
 
@@ -42,7 +43,7 @@ const scrapeAndSave = async () => {
 
         // Process each professor's details
         for (const prof of profDetails) {
-            const { profID, imageSrc, profName } = prof;
+            const { profID, imageSrc, profName, title } = prof;
 
             const existingProfessor = await Professor.findOne({ profID });
             if (existingProfessor) {
@@ -60,6 +61,7 @@ const scrapeAndSave = async () => {
             const professor = new Professor({
                 profID,
                 name: profName,
+                title : title,
                 image: cloudinaryRes.public_id,  // Store Cloudinary public_id
                 rating: 2.5,
                 feedback: [],
