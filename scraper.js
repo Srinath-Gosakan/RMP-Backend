@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 import cloudinary from 'cloudinary';
-import Professor from './model.js';
+import {Professor} from './model.js';
 import dotenv from 'dotenv';
 
 dotenv.config();

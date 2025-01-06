@@ -1,8 +1,11 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import createRouter from './routes.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import passport from 'passport';
+import session from 'express-session';
+import routes from './routes.js';
+import './passport.js'; // Import passport configuration
 
 dotenv.config();
 const app = express();
@@ -17,10 +20,15 @@ mongoose.connect(process.env.MONGO_URI)
 app.use(express.json());
 app.use(cors());
 
-// Routes
-app.use('/api', createRouter());
+// Set up session and passport
+app.use(session({ secret: process.env.SECRET_KEY, resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Use the routes
+app.use('/api', routes);
 
 // Start the server
-app.listen(process.env.port || PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
