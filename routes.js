@@ -1,50 +1,9 @@
 import express from 'express';
-import passport from 'passport';
 import { scrapeAndSave, getImageByProfID } from './scraper.js';
 import { Professor, Student } from './model.js';
 
 const createRouter = () => {
     const router = express.Router();
-
-    // Google OAuth login and callback routes
-    router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-    router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-        // Check if the user's email domain is '@sastra.ac.in'
-        const userEmail = req.user.emails[0].value; // Get the user's email from Google
-
-        if (userEmail.endsWith('@sastra.ac.in')) {
-            // If the email is valid, allow the login and redirect to the homepage (or wherever you want)
-            res.redirect('/');
-        } else {
-            // If the email doesn't have the correct domain, log the user out and redirect to the login page
-            req.logout((err) => {
-                if (err) {
-                    return res.status(500).json({ message: 'Error logging out' });
-                }
-                res.redirect('/login'); // Redirect to a login page or custom error page
-            });
-        }
-    });
-
-    // Logout route
-    router.get('/logout', (req, res) => {
-        req.logout((err) => {
-            if (err) {
-                return res.status(500).json({ message: 'Error logging out' });
-            }
-            res.redirect('/');
-        });
-    });
-
-    // Check login status
-    router.get('/auth/status', (req, res) => {
-        if (req.isAuthenticated()) {
-            res.json({ user: req.user });
-        } else {
-            res.json({ user: null });
-        }
-    });
 
     // Rating submission route
     router.post('/rate', async (req, res) => {
@@ -133,6 +92,11 @@ const createRouter = () => {
         } catch (error) {
             res.status(500).json({ message: 'Error retrieving image', error: error.message });
         }
+    });
+
+    //Generic route
+    router.get('/', (req, res) => {
+        res.status(200).json({ message: 'Welcome to the Professor Rating API' });
     });
 
     return router;
