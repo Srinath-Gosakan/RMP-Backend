@@ -12,11 +12,12 @@ const professorSchema = new mongoose.Schema({
 // Student schema for managing ratings and feedback
 const studentSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    registerNumber: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
     professorReviewed: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Professor' }],
     professorRatings: [{ type: Number }],
     professorFeedbacks: [{ type: String }],
 });
+
 
 // Create and export the models
 const Professor = mongoose.model('Professor', professorSchema);

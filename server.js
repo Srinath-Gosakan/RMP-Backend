@@ -2,11 +2,14 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import passport from 'passport';
+import session from 'express-session';
 import createRouter from './routes.js';
+import './passport.js';
 
 dotenv.config();
 const app = express();
-const PORT = 5000;
+const PORT = 8080;
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
@@ -15,7 +18,22 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  credentials: true,               
+}));
+app.use(session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000, 
+        sameSite: 'lax',
+    },
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // Use the routes
 app.use('/api', createRouter());
