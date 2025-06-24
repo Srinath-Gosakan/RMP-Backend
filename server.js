@@ -17,6 +17,7 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((err) => console.log(err));
 
 // Middleware
+app.set('trust proxy', 1);
 app.use(express.json());
 app.use(cors({
   origin: process.env.CLIENT_URL, 
