@@ -8,6 +8,8 @@ const createRouter = () => {
 
   // LOGIN SUCCESS — create Student if not exists
   router.get('/login/success', async (req, res) => {
+    console.log('Session:', req.session);
+    console.log('User:', req.user);
     if (!req.user) {
       return res.status(403).json({ message: 'Unauthorized' });
     }
