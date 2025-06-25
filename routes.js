@@ -111,7 +111,7 @@ const createRouter = () => {
 
     const { rating, feedback } = req.body;
     const { profID } = req.params;
-    if (!rating || !feedback) return res.status(400).json({ message: 'Rating and feedback are required' });
+    if (!rating) return res.status(400).json({ message: 'Rating is required' });
 
     try {
       const professor = await Professor.findOne({ profID });
