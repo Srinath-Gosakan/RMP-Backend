@@ -68,7 +68,11 @@ const createRouter = () => {
   router.get('/professors', async (req, res) => {
     try {
       const professors = await Professor.find();
-      res.status(200).json(professors);
+      const enriched = professors.map((prof) => ({
+        ...prof.toObject(),
+        ratingCount: prof.feedback.filter(f => f && f.trim()).length
+      }));
+      res.status(200).json(enriched);
     } catch (error) {
       res.status(500).json({ message: 'Error fetching professors', error: error.message });
     }
@@ -138,7 +142,7 @@ const createRouter = () => {
       } else {
         professor.feedback.push(feedback);
         professor.rating = ((professor.rating * oldCount) + rating) / (oldCount + 1);
-        student.professorReviewed.push(professor._id);
+        student.professorReviewed.push(professor._id);  
         student.professorRatings.push(rating);
         student.professorFeedbacks.push(feedback);
         message = 'Rating submitted successfully';
